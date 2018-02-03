@@ -88,17 +88,17 @@ lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem, data = prgeng)
 
 # Adding interaction terms:
 
-gender_educ <- lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem+phd:fem+ms:fem+age:fem+age2:fem, data = prgeng)
+gender_educ <- lm(wageinc ~ age + age2 + wkswrkd + ms + phd + fem + phd:fem + ms:fem + age:fem + age2:fem, data = prgeng)
 
 # female 32 masters
-wage.lm <- lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem+age:fem+age2:fem,data=prgeng)
-predict_data <- data.frame(age=32,age2=32^2,wkswrkd=52,ms=1,phd=0,fem=1,agefem=32*1,agefem2=(32^2)*1)
+wage.lm <- lm(wageinc ~ age + age2 + wkswrkd + ms + phd + fem + age:fem + age2:fem, data = prgeng)
+predict_data <- data.frame(age=32, age2=32^2, wkswrkd=52, ms=1, phd=0, fem=1, agefem=32*1, agefem2=(32^2)*1)
 predict(wage.lm,predict_data,interval="confidence")
 
 # output: 69086.59
 
 # male 32 masters
-predict_data <- data.frame(age=32,age2=32^2,wkswrkd=52,ms=1,phd=0,fem=0,agefem=32*0,agefem2=(32^2)*0)
+predict_data <- data.frame(age=32, age2=32^2, wkswrkd=52, ms=1, phd=0, fem=0, agefem=32*0, agefem2=(32^2)*0)
 predict(wage.lm,predict_data,interval="confidence")
 
 # output: 79831.75
@@ -156,6 +156,39 @@ summary(fatlm2)
 
 # Write English prose that relates the overall mean height of people and the gender-specific mean heights.
 # Write English prose that relates the overall proportion of people taller than 70 inches to the gender-specific proportions.
+
+# Take the % of females and multiply by their mean height, take % of males and multiply by their mean height, and add them together.
+# Take the % of tall (over 70 in) people and multiply by their mean height, take the % of short people (<70 in) and multiply by their 
+# mean height, and add them together.
+
+
+## Page 120
+# Question 1:
+# Consider the census data in Section 1.16.1.
+# Form an approximate 95% confidence interval for β6 in the model (1.28).    
+# Form an approximate 95% confidence interval for the gender effect for Master’s degree holders, β6 + β7, in the model (1.28).  
+
+# Beta6 = fem
+lmodel <- lm(wageinc ~ age + age2 + wkswrkd + ms + phd + fem + ms:fem + phd:fem, data = prgeng)
+summary(lmodel)
+confint(lmodel, 'fem', level=0.95)
+
+# output:
+#         2.5 %    97.5 %
+# fem -11853.68 -8699.915
+
+confint(lmodel, 'fem', level=0.95) + confint(lmodel, 'ms:fem', level=0.95)
+
+# output:
+#        2.5 %    97.5 %
+#  fem -19398.6 -9469.501
+
+
+# Question 2:
+# The full bikeshare dataset spans 3 years’ time. Our analyses here have only used the first year. 
+# Extend the analysis in Section 2.8.5 to the full data set, adding dummy variables indicating the 
+# second and third year. Form an approximate 95% confidence interval for the difference between the 
+# coefficients of these two dummies.
 
 
 
