@@ -106,3 +106,56 @@ predict(wage.lm,predict_data,interval="confidence")
 # Therefore, female engineers who are 32 with a masters degree earn about 10.7k less than males with the same age and education.
 
 
+# Question 3:
+# Consider the bodyfat data mentioned in Section 1.2. Use lm() to form a prediction equation for density from the other
+# variables (skipping the first three), and comment on whether use of indirect methods in this way seems feasible.
+
+bodyfat <- read.csv("bodyfat.csv")
+head(bodyfat)
+bodyfat2 <- bodyfat[,c(5:18)] # to drop case, brozek, siri
+
+fatlm <- lm(density ~ ., data = bodyfat2)
+summary(fatlm)
+# output:
+# Coefficients:
+# Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  1.139e+00  4.030e-02  28.248  < 2e-16 ***
+#  age         -1.203e-04  7.515e-05  -1.601  0.11062    
+# weight       2.395e-04  1.243e-04   1.926  0.05528 .  
+# height       1.498e-04  2.230e-04   0.672  0.50243    
+# neck         1.075e-03  5.401e-04   1.991  0.04765 *  
+#  chest        1.232e-04  2.303e-04   0.535  0.59339    
+# abdomen     -2.277e-03  2.008e-04 -11.335  < 2e-16 ***
+#  hip          5.513e-04  3.390e-04   1.626  0.10521    
+# thigh       -6.149e-04  3.354e-04  -1.833  0.06799 .  
+# knee        -4.844e-05  5.622e-04  -0.086  0.93141    
+# ankle       -6.314e-04  5.145e-04  -1.227  0.22094    
+# biceps      -5.755e-04  3.976e-04  -1.448  0.14907    
+# forearm     -1.017e-03  4.626e-04  -2.198  0.02891 *  
+#  wrist        3.959e-03  1.243e-03   3.185  0.00164 ** 
+
+# it looks like measuring abdomen and wrist is strongly indicative of body fat %
+
+# confirming 
+fatlm2 <- lm(density ~ wrist + abdomen, data = bodyfat2)
+summary(fatlm2)
+# output:
+# Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  1.111668   0.013579  81.867  < 2e-16 ***
+#   wrist        0.005611   0.000924   6.073 4.67e-09 ***
+#   abdomen     -0.001711   0.000080 -21.391  < 2e-16 ***
+
+# still highly significant p-value
+
+
+# Question 4:
+# In Section 1.19.5.2, we gave this intuitive explanation:
+# In other words, the national mean height is a weighted average of the state means, with the weight for 
+# each state being its proportion of the national population. Replace state by gender in the following.
+
+# Write English prose that relates the overall mean height of people and the gender-specific mean heights.
+# Write English prose that relates the overall proportion of people taller than 70 inches to the gender-specific proportions.
+
+
+
