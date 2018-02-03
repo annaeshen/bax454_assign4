@@ -81,7 +81,28 @@ pe <- as.matrix(pe)
 
 lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem, data = prgeng)
 
+## Coefficients:
+# (Intercept)          age         age2      wkswrkd           ms          phd          fem  
+# -81136.70      3900.35       -40.33      1196.39     15431.07     23183.97    -11484.49 
+# index starts at intercept = 0
 
+# Adding interaction terms:
 
+gender_educ <- lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem+phd:fem+ms:fem+age:fem+age2:fem, data = prgeng)
+
+# female 32 masters
+wage.lm <- lm(wageinc ~ age+age2+wkswrkd+ms+phd+fem+age:fem+age2:fem,data=prgeng)
+predict_data <- data.frame(age=32,age2=32^2,wkswrkd=52,ms=1,phd=0,fem=1,agefem=32*1,agefem2=(32^2)*1)
+predict(wage.lm,predict_data,interval="confidence")
+
+# output: 69086.59
+
+# male 32 masters
+predict_data <- data.frame(age=32,age2=32^2,wkswrkd=52,ms=1,phd=0,fem=0,agefem=32*0,agefem2=(32^2)*0)
+predict(wage.lm,predict_data,interval="confidence")
+
+# output: 79831.75
+
+# Therefore, female engineers who are 32 with a masters degree earn about 10.7k less than males with the same age and education.
 
 
