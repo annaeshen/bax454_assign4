@@ -190,5 +190,59 @@ confint(lmodel, 'fem', level=0.95) + confint(lmodel, 'ms:fem', level=0.95)
 # second and third year. Form an approximate 95% confidence interval for the difference between the 
 # coefficients of these two dummies.
 
+shar <- read.csv("day.csv", header = TRUE)
+names(shar)[15]<- "reg"
+shar$temp2 <- shar$temp^2
+lm(shar$reg ~ shar$temp + shar$temp2)
+lm(formula = shar$reg ~ shar$temp + shar$temp2)
+shar$year1 <- as.integer(shar$instant < 365)
+shar$year2 <- as.integer(shar$instant > 365)
+shar$clear <- as.integer(shar$weathersit == 1)
+
+shar_model <- lm(reg ~ temp + temp2 + holiday + weekday + clear + windspeed + year1 + year2,data=shar)
+summary(shar_model)
+confint(shar_model, 'year1', level=0.95)
+confint(shar_model, 'year2', level=0.95)
+
+# output: 
+#           2.5 %   97.5 %
+#  year1 -396.5342 2892.349
+#           2.5 %   97.5 %
+#  year2 1311.677 4599.857
+
+# it looks like the bikeshare was way more popular the second year
+
+
+# Question 3:
+# Suppose we are studying growth patterns in children, at k particular ages. Denote the height of the ith child
+# in our sample data at age j by Hij, with Hi = (Hi1,...,Hik)′ denoting the data for child i. 
+# Suppose the population distribution of each Hi is k-variate normal with mean vector μ and covariance matrix Σ. 
+# Say we are interested in successive differences in heights,Dij =Hi,j+1−Hij, j=1,2,...,k−1. DefineDi =(Di1,...,Dik)′. 
+# Explain why each Di is (k−1)-variate normal, and derive matrix expressions for the mean vector and covariance matrices.
+
+# The differences in heights each successive year will be the change or derivative or slope or coefficient for height.
+# Explanation: each Di (difference) is (k-1)-variate normal because the population distribution of each Hi is normal with
+# k dimensions or variables, so once you take the derivative you lose one, therefore it is k-1.
+
+
+# Question 4: 
+# In the simulation in Section 2.9.3, it is claimed that ρ2 = 0.50. Confirm this through derivation.
+
+simr2 <- function(n, p, nreps) {
+  r2s <- vector(length = nreps)
+  for (i in 1:nreps) {
+    x <- matrix(rnorm(n*p), ncol = p)
+    y <- x %*% rep(1, p) + rnorm(n, sd = sqrt(p))
+    r2s[i] <- getr2(x, y)
+  }
+  hist(r2s)
+}
+
+getr2 <- function(x, y) {
+  smm <- summary(lm(y ~ x))
+  smm$r.squared
+}
+
+simr2(250, 8, 1000)
 
 
